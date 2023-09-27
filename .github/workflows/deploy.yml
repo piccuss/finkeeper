@@ -2,9 +2,9 @@ name: pack test
 
 on:
   push:
-    branches: [ "main", "develop/**" ]
+    branches: [ "release/**" ]
   pull_request:
-    branches: [ "main", "develop/**" ]
+    branches: [ "release/**" ]
 
 jobs:
   build:
