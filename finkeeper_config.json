@@ -1,0 +1,5 @@
+{
+  "stock_codes": ["123", "456"],
+  "receiver": "piccus@outlook.com",
+  "stock_data_source": "xueqiu"
+}
