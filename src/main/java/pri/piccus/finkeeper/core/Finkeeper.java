@@ -17,6 +17,7 @@
 
 package pri.piccus.finkeeper.core;
 
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,13 +57,13 @@ public class Finkeeper {
         //2、调用数据源，获取最新数据
         var stocks = stockDataSourceFactory.create(config).fetchStocks();
         //3、compose结果
-        var content = parseStocksContent(stocks);
+        var content = composeStocksContent(stocks);
         //4、发送通知
         keeperFactory.create(config, content).keep();
         LOGGER.info("finkeep finished, time cost={}ms", System.currentTimeMillis() - start);
     }
 
-    private String parseStocksContent(List<Stock> stocks) {
+    private String composeStocksContent(@Nonnull List<Stock> stocks) {
         //TODO parse stock result
         return "mock content";
     }

@@ -17,15 +17,18 @@
 
 package pri.piccus.finkeeper.core.datasource;
 
+import com.google.common.collect.ImmutableList;
 import jakarta.annotation.Nonnull;
+import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import pri.piccus.finkeeper.core.common.Stock;
+import pri.piccus.finkeeper.utils.HttpUtil;
+import pri.piccus.finkeeper.utils.JsonUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.text.ParseException;
+import java.util.*;
 
 /**
  * sample:
@@ -38,7 +41,7 @@ class XueqiuStockDataSource implements StockFetcher{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XueqiuStockDataSource.class);
 
-    private static final String API= "stock.xueqiu.com/v5/stock/realtime/quotec.json";
+    private static final String API= "https://stock.xueqiu.com/v5/stock/realtime/quotec.json?symbol=";
 
     @Nonnull
     @Override
@@ -49,13 +52,37 @@ class XueqiuStockDataSource implements StockFetcher{
     @Nonnull
     @Override
     public List<Stock> fetchStocks(@Nonnull Set<String> stockCodes) {
-
-        //TODO 实现真实获取
-        LOGGER.info("mock fetch, codes={}", stockCodes);
-        return new ArrayList<>();
+        Objects.requireNonNull(stockCodes);
+        var reqUri = buildReqUri(stockCodes);
+        LOGGER.info("build req uri={}", reqUri);
+        var rawData = HttpUtil.get(reqUri);
+        if (rawData == null) {
+            LOGGER.error("");
+            return ImmutableList.of();
+        }
+        return parseData(rawData);
     }
 
-    private String buildReqUri(Set<String> stockCodes) {
-        return null;
+    private String buildReqUri(@Nonnull Set<String> stockCodes) {
+        return API + Strings.join(stockCodes, ',');
+    }
+
+    private List<Stock> parseData(@Nonnull String rawData) {
+        List<Stock> list = new ArrayList<>();
+        try {
+            var tree = JsonUtil.MAPPER.readTree(rawData);
+            if (tree == null) {
+                throw new RuntimeException("readTree json parse is null");
+            }
+            var dataCollectionNode = tree.get("data");
+            if (dataCollectionNode == null) {
+                throw new RuntimeException("readTree json get data node is null");
+            }
+            dataCollectionNode.forEach(dataNode -> list.add(new Stock("", dataNode.get("symbol").asText(), dataNode.get("current").asDouble())));
+
+        } catch (Exception e) {
+            LOGGER.error("parseData failed.e={}", e.getMessage());
+        }
+        return ImmutableList.copyOf(list);
     }
 }

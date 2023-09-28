@@ -25,6 +25,6 @@ class HttpUtilTest {
 
     @Test
     void get() {
-        assertNotNull(HttpUtil.get("https://stock.xueqiu.com/v5/stock/realtime/quotec.json?symbol=SH600036,SH513500", HttpUtil.JSON_TYPE));
+        assertNotNull(HttpUtil.get("https://stock.xueqiu.com/v5/stock/realtime/quotec.json?symbol=SH600036,SH513500"));
     }
 }

@@ -46,14 +46,14 @@ public interface HttpUtil {
     int SUCCESS_CODE = 200;
 
     @Nullable
-    static String get(@Nonnull String uri, @Nonnull String contentType) {
+    static String get(@Nonnull String uri) {
         var start = System.currentTimeMillis();
         try (var client = HttpClient.newHttpClient()) {
             var request = HttpRequest.newBuilder()
                     .uri(URI.create(uri))
                     .timeout(Duration.ofMinutes(2))
                     .header("Accept-Encoding", "gzip,deflate")
-                    .header("Content-Type", contentType)
+                    .header("Content-Type", ALL_TYPE)
                     .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36 Edg/117.0.2045.43")
                     .build();
             var resp = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
@@ -62,7 +62,9 @@ public interface HttpUtil {
                 LOGGER.error("get request fail.status code={}", statusCode);
                 return null;
             }
-            return CharStreams.toString(new InputStreamReader(getDecodedInputStream(resp), Charsets.UTF_8));
+            var respStr = CharStreams.toString(new InputStreamReader(getDecodedInputStream(resp), Charsets.UTF_8));
+            LOGGER.debug("get request, uri={}, resp={}", uri, respStr);
+            return respStr;
         } catch (Exception e) {
             LOGGER.error("get request fail, uri={}", uri, e);
         } finally {
