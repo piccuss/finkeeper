@@ -34,9 +34,11 @@ import java.util.Set;
  * --compressed`
  */
 @Component
-public class XueqiuStockDataSource implements StockFetcher{
+class XueqiuStockDataSource implements StockFetcher{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XueqiuStockDataSource.class);
+
+    private static final String API= "stock.xueqiu.com/v5/stock/realtime/quotec.json";
 
     @Nonnull
     @Override
@@ -47,8 +49,13 @@ public class XueqiuStockDataSource implements StockFetcher{
     @Nonnull
     @Override
     public List<Stock> fetchStocks(@Nonnull Set<String> stockCodes) {
+
         //TODO 实现真实获取
         LOGGER.info("mock fetch, codes={}", stockCodes);
         return new ArrayList<>();
+    }
+
+    private String buildReqUri(Set<String> stockCodes) {
+        return null;
     }
 }

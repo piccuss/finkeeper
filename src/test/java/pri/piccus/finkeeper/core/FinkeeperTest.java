@@ -15,26 +15,22 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package pri.piccus.finkeeper.core.keep;
+package pri.piccus.finkeeper.core;
 
-import jakarta.annotation.Nonnull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import jakarta.annotation.Resource;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@Component
-class EmptyKeeperImpl implements Keeper {
+import static org.junit.jupiter.api.Assertions.*;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EmptyKeeperImpl.class);
+@SpringBootTest
+class FinkeeperTest {
 
-    @Nonnull
-    @Override
-    public String getKeeperName() {
-        return "EMPTY";
-    }
+    @Resource
+    Finkeeper finkeeper;
 
-    @Override
-    public void keep(@Nonnull String content) {
-        LOGGER.info("empty keep done!, content={}", content);
+    @Test
+    void keep() throws Exception {
+        finkeeper.keep();
     }
 }

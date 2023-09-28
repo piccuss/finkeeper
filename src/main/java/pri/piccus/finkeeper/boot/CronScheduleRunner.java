@@ -36,7 +36,7 @@ public class CronScheduleRunner {
         this.finkeeper = finkeeper;
     }
 
-    @Scheduled(fixedDelay = 30000)
+    @Scheduled(cron = "${boot.cron.pattern}")
     public void run() {
         LOGGER.info("It's show time.");
         try {

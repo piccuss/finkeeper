@@ -15,26 +15,16 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package pri.piccus.finkeeper.core.keep;
+package pri.piccus.finkeeper.utils;
 
-import jakarta.annotation.Nonnull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.junit.jupiter.api.Test;
 
-@Component
-class EmptyKeeperImpl implements Keeper {
+import static org.junit.jupiter.api.Assertions.*;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EmptyKeeperImpl.class);
+class HttpUtilTest {
 
-    @Nonnull
-    @Override
-    public String getKeeperName() {
-        return "EMPTY";
-    }
-
-    @Override
-    public void keep(@Nonnull String content) {
-        LOGGER.info("empty keep done!, content={}", content);
+    @Test
+    void get() {
+        assertNotNull(HttpUtil.get("https://stock.xueqiu.com/v5/stock/realtime/quotec.json?symbol=SH600036,SH513500", HttpUtil.JSON_TYPE));
     }
 }
